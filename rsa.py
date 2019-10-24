@@ -1,8 +1,6 @@
 from math import gcd
 from random import randint
-from time import sleep
 from sys import getrecursionlimit, setrecursionlimit
-
 
 
 def find_prime_with_fermat(number_of_bits=1000):
@@ -35,66 +33,56 @@ def modinv(a, m):
 
 class RSA(object):
     @property
-    def chave_publica(self):
+    def public_key(self):
         return self.n, self.e
 
     @property
-    def chave_privada(self):
+    def private_key(self):
         return self.p, self.q, self.d
 
     def trabalho(self):
         # Need to increase max recursion for python stack
         # print(getrecursionlimit())
         setrecursionlimit(2000)
-        self.gerar_primos()
-        self.calcular_n()
-        self.calcular_phi()
-        self.gerar_e()
-        self.calcular_d()
 
-    def gerar_primos(self):
+        self.create_prime_numbers()
+        self.calculate_n()
+        self.calculate_phi()
+        self.generate_e()
+        self.calculate_d()
+
+    def create_prime_numbers(self):
         self.p = find_prime_with_fermat()
         self.q = find_prime_with_fermat()
         while self.p == self.q:
             self.q = find_prime_with_fermat()
 
-    def calcular_n(self):
+    def calculate_n(self):
         self.n = self.p * self.q
 
-    def calcular_phi(self):
+    def calculate_phi(self):
         self.phi = (self.p - 1) * (self.q - 1)
 
-    def gerar_e(self):
+    def generate_e(self):
         self.e = randint(1, self.phi)
 
         if self.e < 2 or gcd(self.e, self.phi) != 1:
             self.gerar_e()
 
-    def calcular_d(self):
+    def calculate_d(self):
         self.d = modinv(self.e, self.phi)
 
-    # def gerar_chaves(self, bits=64):
-    #     self.gerar_primos(int(bits / 2))
-    #     self.calcular_n()
-    #     self.calcular_phi()
-    #     self.gerar_e()
-    #     self.calcular_d()
+    @staticmethod
+    def encrypt(message, public_key):
+        n, e = public_key
+        ascii_message= [ord(letter) for letter in message]
+        encrypted_message = [str(pow(ascii_letter, e, n)) for ascii_letter in ascii_message]
+        return ' '.join(encrypted_message)
 
     @staticmethod
-    def encriptar(mensagem, chave_publica):
-        n, e = chave_publica
-
-        mensagem_ascii = [ord(caractere) for caractere in mensagem]
-        mensagem_encriptada = [str(pow(caractere_ascii, e, n)) for caractere_ascii in mensagem_ascii]
-
-        return ' '.join(mensagem_encriptada)
-
-    @staticmethod
-    def desencriptar(mensagem_encriptada, chave_privada=None):
-        p, q, d = chave_privada
-
-        mensagem_encriptada = mensagem_encriptada.split(' ')
-        mensagem_ascii = [pow(int(caractere_encriptado), d, p * q) for caractere_encriptado in mensagem_encriptada]
-        mensagem = [chr(caractere_ascii) for caractere_ascii in mensagem_ascii]
-
-        return ''.join(mensagem)
+    def decrypt(encrypted_message, private_key):
+        p, q, d = private_key
+        encrypted_message = encrypted_message.split(' ')
+        ascii_message = [pow(int(encrypted_letter), d, p * q) for encrypted_letter in encrypted_message]
+        message = [chr(ascii_letter) for ascii_letter in ascii_message]
+        return ''.join(message)
