@@ -5,11 +5,11 @@ How to use this:
 
 ```
 python3.7
-from rsa import *
+from rsa import 
 rsa = RSA()
 rsa.setup()
-msg_encriptada = rsa.encrypt("Mensagem ultra-secreta", rsa.public_key)
-rsa.decrypt(msg_encriptada, rsa.private_key)
+mensagem_encriptada = rsa.encrypt("Mensagem ultra-secreta", rsa.public_key)
+rsa.decrypt(mensagem_encriptada, rsa.private_key)
 ```
 
 Or you can run individual steps one by one, and see the created values:
@@ -28,6 +28,6 @@ rsa.calculate_phi()
 rsa.generate_e()
 rsa.calculate_d()
 
-msg_encriptada = rsa.encrypt("Mensagem ultra-secreta", rsa.public_key)
-rsa.decrypt(msg_encriptada, rsa.private_key)
+mensagem_encriptada = rsa.encrypt("Mensagem ultra-secreta", rsa.public_key)
+rsa.decrypt(mensagem_encriptada, rsa.private_key)
 ```
